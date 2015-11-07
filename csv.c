@@ -12,11 +12,11 @@ FILE *open_csv(char *filename) {
     return input;
 }
 
-void get_csv_lines(FILE *file) {
+char **get_csv_lines(FILE *file) {
     int lines = 128;
     int line_length = 100;
 
-    char **words = (char **)malloc(sizeof(char*)*lines);
+    char **words = (char **)malloc(sizeof(char*) * lines);
 
     int i;
     for (i = 0; 1; i++) {
@@ -24,7 +24,7 @@ void get_csv_lines(FILE *file) {
 
         if (i >= lines) {
             int new_lines = lines * 2;
-            words = (char **)realloc(words, sizeof(char*)*new_lines);
+            words = (char **)realloc(words, sizeof(char*) * new_lines);
             lines = new_lines;
         }
 
@@ -41,21 +41,33 @@ void get_csv_lines(FILE *file) {
         words[i][j+1] = '\0';
     }
 
-    int j;
-    for (j = 0; j < i; j++) {
-        printf("%s\n", words[j]);
-    }
+    //free(words); 
+    return words;
+}
 
-    free(words);
+char *get_next_line(char **lines) {
+    static int pos = 0;
+    pos++;
+
+    if (pos > sizeof(lines)) {
+        printf("Position %d is out of bounds.\n", pos);
+        return "0";
+    }
+    char *next_line = lines[pos-1];
+    return next_line;
 }
 
 void main(int argc, char *argv[]) {
     FILE *test = open_csv(argv[1]);
 
-    char line[1000];
-    get_csv_lines(test);
-    //line = get_csv_lines(test);
-    //printf("%c\n", line[0]);
+    char *line;
+    char **words = get_csv_lines(test);
+
+    int i;
+    for (i = 0; i < 6; i++) {
+        line = get_next_line(words);
+        printf("%s\n", line);
+    }
 
     fclose(test);
 }
