@@ -45,9 +45,11 @@ char **get_csv_lines(FILE *file) {
 char *get_next_line(char **lines) {
     static int pos = 0;
 
-    if (pos > sizeof(lines)) {
+//    if (pos > sizeof(lines)) {
+      if (pos > 10) {
         printf("Position %d is out of bounds.\n", pos);
-        return "0";
+//        return "0";
+        exit(0);
     }
 
     pos++;
@@ -66,7 +68,7 @@ void parse_line(char *input) {
 
         while (j < strlen(input)) {
             if (input[j] == ',') {
-                printf("Splitting along a comma at %d.\n", j);
+//                printf("Splitting along a comma at %d.\n", j);
                 i++;
                 j++;
                 break;
@@ -74,9 +76,9 @@ void parse_line(char *input) {
                 end_of_line = 1;
                 break;
             } else {
-                printf("Adding an input to values[%d][%d].\n", i, j);
+//                printf("Adding an input to values[%d][%d].\n", i, j);
                 values[i][j] = input[j];
-                printf("values[%d][%d] = %c\n", i, j, values[i][j]);
+//                printf("values[%d][%d] = %c\n", i, j, values[i][j]);
             }
             j++;
         }
@@ -85,25 +87,34 @@ void parse_line(char *input) {
             break;
         }
     }
+    //return **values;
 }
 
 int main(int argc, char *argv[]) {
     FILE *test = open_csv(argv[1]);
 
     char *line;
+    //char **values;
     char **words = get_csv_lines(test);
+
+    int i;
+    for (i = 0; i < 8; i++) {
+        line = get_next_line(words);
+        printf("%s", line);
+    }
+
 /*
     int i;
     for (i = 0; i < 5; i++) {
         line = get_next_line(words);
+        line = parse_line(line);
         printf("%s\n", line);
     }
 */
-    line = get_next_line(words);
-    parse_line(line);
-//    printf("%s\n", line);
-
     fclose(test);
+
+    free(line);
+    free(words);
 
     return 0;
 }
