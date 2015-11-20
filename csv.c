@@ -38,10 +38,7 @@ char **get_csv_lines(FILE *file) {
 
         }
 
-        words[i][j+1] = '\0';
     }
-
-    //free(words); 
     return words;
 }
 
@@ -62,11 +59,10 @@ void parse_line(char *input) {
     char **values = malloc(sizeof(char *) * strlen(input));
     int i = 0;
     int j = 0;
-//    printf("Size of values: %d\n", strlen(values));
-//    printf("Size of input: %d\n", strlen(input));
 
     while (i < strlen(input)) {
         values[i] = malloc(sizeof(char *) * 3);
+        int end_of_line = 0;
 
         while (j < strlen(input)) {
             if (input[j] == ',') {
@@ -74,60 +70,24 @@ void parse_line(char *input) {
                 i++;
                 j++;
                 break;
+            } else if (input[j] == '\n') {
+                end_of_line = 1;
+                break;
             } else {
                 printf("Adding an input to values[%d][%d].\n", i, j);
                 values[i][j] = input[j];
                 printf("values[%d][%d] = %c\n", i, j, values[i][j]);
-                //j++;
             }
             j++;
         }
 
-//        if (input[j] == ',') {
-//            printf("Splitting along a comma.\n");
-//            j++;
-//        } else if (input[i] == '\n') {
-//            printf("Reached the end of a line.\n");
-//            break;
-//        } else {
-//            printf("Adding an item to values[%d].\n", i);
-/*
-            while (j < strlen(input)) {
-//                printf("made it through: i = %d, j = %d\n", i, j);
-                values[i][j] = input[i];
-//                printf("%s\n", values[i]);
-                j++;
-            }
-*/
-//            values[i][j] = input[i];
-//            i++;
-//            j++;
-//        }
-    }
-
-//    printf("Length of values[0]: %d\n", strlen(values[0]));
-//    printf("Length of values[1]: %d\n", strlen(values[1]));
-//    printf("Length of values[2]: %d\n", strlen(values[2]));
-/*
-    i = 0;
-    j = 0;
-
-    while (i < strlen(input)) {
-        while (j < strlen(*values)) {
-            printf("%c", values[i][j]);
-            j++;
+        if (end_of_line == 1) {
+            break;
         }
-        printf("\n");
-        i++;
     }
-*/
-    printf("values[%d] = %s\n", 0, values[0]);
-    printf("values[%d] = %s\n", 1, values[1]);
-    printf("values[%d] = %s\n", 2, values[2]);
-    printf("values[%d] = %s\n", 3, values[3]);
 }
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     FILE *test = open_csv(argv[1]);
 
     char *line;
@@ -141,7 +101,9 @@ void main(int argc, char *argv[]) {
 */
     line = get_next_line(words);
     parse_line(line);
-    printf("%s\n", line);
+//    printf("%s\n", line);
 
     fclose(test);
+
+    return 0;
 }
